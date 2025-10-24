@@ -53,48 +53,63 @@ It’s great for:
    ├── [📸 Add Toy] → Opens camera → Capture → Save locally
    ├── Gallery grid → Shows all saved toys
    └── [🎲 Spin Wheel] → Random selection → Show winner + start timer
-During the spin:
+```
 
-Photos appear around a circular wheel.
+**During the spin:**
+- Photos appear around a circular wheel.
+- Wheel rotates for a few seconds.
+- Random toy image is chosen.
 
-Wheel rotates for a few seconds.
+**During the timer:**
+- Big image of the chosen toy is shown.
+- Countdown starts from 15:00 → 0:00.
+- Options: [⏹ Stop] [🔁 Spin Again].
 
-Random toy image is chosen.
+---
 
-During the timer:
-
-Big image of the chosen toy is shown.
-
-Countdown starts from 15:00 → 0:00.
-
-Options: [⏹ Stop] [🔁 Spin Again].
-
-💾 Data Model
+## 💾 Data Model
 
 Each toy/game is saved like this:
+
+```javascript
 {
   id: 'uuid',
   imageBlob: Blob,      // Photo of the toy
   createdAt: Date.now()
 }
+```
+
 Stored in an IndexedDB object store named "toys-store".
 
-⚙️ Setup
-1. Clone the repository
+---
+
+## ⚙️ Setup
+
+1. **Clone the repository**
+
+```bash
 git clone https://github.com/your-username/toy-picker-pwa.git
 cd toy-picker-pwa
+```
 
-2. Run a local server
+2. **Run a local server**
 
 You need a local server to access the camera (HTTPS required on the web):
+
+```bash
 npx serve .
 # or
 python3 -m http.server 8080
+```
 
-3. Install the PWA
+3. **Install the PWA**
 
 Once loaded in Chrome or Safari, use “Add to Home Screen” to install it like a native app.
-#Project Structure
+---
+
+## 📂 Project Structure
+
+```text
 toy-picker-pwa/
 │
 ├── index.html          # Main layout and buttons
@@ -102,9 +117,15 @@ toy-picker-pwa/
 ├── app.js              # Core app logic (camera, storage, spin, timer)
 ├── manifest.json       # PWA metadata and icons
 └── service-worker.js   # Offline caching
+```
 
-# Core logic examples
-##Photo Capture
+---
+
+## 💻 Core Logic Examples
+
+### 📸 Photo Capture
+
+```javascript
 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 video.srcObject = stream;
 
@@ -113,20 +134,22 @@ canvas.width = video.videoWidth;
 canvas.height = video.videoHeight;
 canvas.getContext('2d').drawImage(video, 0, 0);
 canvas.toBlob(blob => saveToIndexedDB(blob));
+```
 
+### 🎡 Roulette Selection
 
-Roulette Selection
-
+```javascript
 function spinWheel() {
   const toys = getAllToys();
   const winner = toys[Math.floor(Math.random() * toys.length)];
   animateRoulette(winner);
   startTimer(15 * 60);
 }
+```
 
+### ⏱️ Timer
 
-Timer
-
+```javascript
 function startTimer(seconds) {
   let remaining = seconds;
   const interval = setInterval(() => {
@@ -134,24 +157,21 @@ function startTimer(seconds) {
     if (--remaining <= 0) clearInterval(interval);
   }, 1000);
 }
+```
 
+---
 
-🎨 Design Notes
+## 🎨 Design Notes
 
-Bright colors and rounded shapes for a friendly, child-safe feel.
+- Bright colors and rounded shapes for a friendly, child-safe feel.
+- Large buttons for easy tapping.
+- Offline-first approach ensures it works even on an old tablet with no Wi-Fi.
 
-Large buttons for easy tapping.
+---
 
-Offline-first approach ensures it works even on an old tablet with no Wi-Fi.
-
-🚀 Future Ideas
-
-🗑️ Delete or rename toys
-
-🔊 Add sound effects for spin and timer end
-
-💾 Backup toys to cloud or export list
-
-🎨 Themes (e.g. “Space”, “Rainbow”, “Woodland”)
-
-🧘 “Calm Timer” mode for quiet play sessions
+## 🚀 Future Ideas
+- 🗑️ Delete or rename toys
+- 🔊 Add sound effects for spin and timer end
+- 💾 Backup toys to cloud or export list
+- 🎨 Themes (e.g. “Space”, “Rainbow”, “Woodland”)
+- 🧘 “Calm Timer” mode for quiet play sessions
